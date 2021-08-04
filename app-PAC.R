@@ -67,7 +67,7 @@ fluidRow(column(4,  #style = "background-color:#999999;",
   
   tabPanel("About", 
            # titlePanel("About"), 
-           div(includeMarkdown("./R/about-app-PAC.md"), 
+           div(includeMarkdown("about-app-PAC.md"), 
                align="justify")
   ) #tabPanel(), About
   
