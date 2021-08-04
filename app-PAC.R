@@ -31,10 +31,10 @@ fluidRow(column(4,  #style = "background-color:#999999;",
          h4("Input parameters"),
 
          selectInput("k", label = "Particle type", 
-                          choices = list("UFP" = 1.64, 
+                          choices = list("Ultrafine particle" = 1.64, 
                                          "PM2.5" = 1.67, 
                                          "PM10" = 3.35), 
-                          selected = "PM2.5"),
+                          selected = 1.67),
          
          uiOutput("ui1"),
          uiOutput("CADR_lim"),
@@ -206,7 +206,7 @@ output$plot1<-renderPlot({
 
   deposition_df <- data.table(
     k = c(1.64,1.67,3.35),
-    parti_type = c("UFP","PM2.5","PM10")
+    parti_type = c("Ultrafine particle","PM2.5","PM10")
   )
   df <- data.table(expand.grid(N = c(1:50),  k = c(1.64, 1.67, 3.35)))[deposition_df, on = "k"]
   
@@ -262,8 +262,8 @@ output$plot1<-renderPlot({
     g_line +
     g_point + 
     
-    scale_color_manual("Particle type", values = c("#424D55", "#DCC575", "#C6C6C6") ) +
-    scale_y_continuous("Efficiency (%)", expand = c(0,0)) +
+    scale_color_manual("Particle type", values = c("#1E9DE5", "#DCC575", "#C6C6C6") ) +
+    scale_y_continuous("Effectiveness (%)", expand = c(0,0)) +
     scale_x_continuous("Number of portable air cleaners", expand = c(0,0)) +
     # theme_bw() +
     theme(legend.position = "top",
