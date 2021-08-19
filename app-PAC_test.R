@@ -14,7 +14,7 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
                            
                            tabPanel("Home",
                                     
-                                    fluidRow(column(5,  
+                                    fluidRow(column(4,  
                                                     h4("Select units"),
                                                     
                                                     radioButtons("units_type", NULL,
@@ -55,7 +55,7 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
                                                     actionButton("submitbutton", "Calculate", 
                                                                  class = "btn btn-primary")
                                     ),
-                                    column(7, plotOutput('plot1'), h4(htmlOutput("txtout") )
+                                    column(8, plotOutput('plot1'), h4(htmlOutput("txtout") )
                                     )
                                     ),
                            ), #tabPanel(), Home
