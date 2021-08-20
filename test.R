@@ -1,26 +1,34 @@
-library(shiny)
-library(ggplot2)
-
-#data change only once at the begenin
-dt <- data.frame(x=runif(1000), y=runif(1000))
-
-ui <- fluidPage(
-  sliderInput("slider1","slider1", value=5, min=1, max=10),
-  sliderInput("slider2","slider2", value=0.8, min=0, max=1),
-  radioButtons("check1","check1",choices = c("red","blue","green")),
-  actionButton("refreshColours","refreshColours"),
-  plotOutput("rys")
-)
-
-
-server <- function(input,output){
-  pp <- eventReactive(c(input$refreshColours,input$slider2,input$slider1),{
-    ggplot(dt, aes(x,y)) + 
-      geom_point(size=input$slider1, alpha=input$slider2, colour=isolate(input$check1))
-  })
-  output$rys <- renderPlot({
-    pp()
+require(shiny)
+runApp(list(ui = pageWithSidebar(
+  headerPanel("censusVis"),
+  sidebarPanel(
+    helpText("Create demographic maps with 
+      information from the 2010 US Census."),
+    selectInput("var", 
+                label = "Choose a variable to display",
+                choices = c("Percent White", "Percent Black",
+                            "Percent Hispanic", "Percent Asian"),
+                selected = "Percent White"),
+    sliderInput("range", 
+                label = "Range of interest:",
+                min = 0, max = 100, value = c(0, 100))
+  ),
+  mainPanel(textOutput("text1"),
+            textOutput("text2"),
+            htmlOutput("text")
+  )
+),
+server = function(input, output) {
+  output$text1 <- renderText({paste("You have selected", input$var)})
+  output$text2 <- renderText({paste("You have chosen a range that goes from",
+                                    input$range[1], "to", input$range[2])})
+  output$text <- renderUI({
+    str1 <- paste("You have selected", input$var)
+    str2 <- paste("You have chosen a range that goes from",
+                  input$range[1], "to", input$range[2])
+    HTML(paste(str1, str2, sep = '<br/>'))
+    
   })
 }
-
-shinyApp(ui=ui, server=server)
+)
+)

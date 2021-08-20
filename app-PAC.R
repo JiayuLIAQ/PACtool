@@ -51,9 +51,9 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
                                                                              'Manually type in' = 'venti_type_in'),
                                                                  selected = 'venti_type'),
                                                     uiOutput("ui3"),
-                                                    uiOutput("V_Watt"),
-                                                    actionButton("submitbutton", "Calculate", 
-                                                                 class = "btn btn-primary")
+                                                    uiOutput("V_Watt")#,
+                                                    # actionButton("submitbutton", "Calculate", 
+                                                    #              class = "btn btn-primary")
                                     ),
                                     column(7, plotOutput('plot1'), h4(htmlOutput("txtout") )
                                     )
@@ -318,14 +318,14 @@ server<- function(input, output, session) {
   
   output$V_Watt <- renderUI({
     numericInput("W", 
-                 label = "Energy comsumption of one PAC (Watt)", 
+                 label = "Energy comsumption of one PAC (W)", 
                  value = numVal_V_Watt(),
                  min = global_V_Watt$numMin,
                  max = global_V_Watt$numMax)
   })
   
   # calculation---------------------
-  datasetInput <- eventReactive(input$submitbutton, {
+  datasetInput <- reactive({
     
     energy_eff <- as.numeric(input$CADR)/as.numeric(input$W)
     
@@ -339,9 +339,9 @@ server<- function(input, output, session) {
         ) 
         if ( !(is.na(Output)|is.na(input$W)) ) {
           paste0("Effectiveness: ", as.character( round(Output*100, digits = 1) ), "%","<br/>","<br/>","<br/>",
-                 "Energy efficiency of the PAC (CADR/Watt): ",round(energy_eff, digits = 1), "<br/>","<br/>",
-                 "Total operating power consumption: ",round(as.numeric(input$W)*as.numeric(input$N), digits = 1)," Watts", "<br/>","<br/>",
-                 "Power density: ",round(as.numeric(input$W)*as.numeric(input$N)/as.numeric(input$area), digits = 1)," Watt/m<sup>2</sup>")  
+                 "Energy efficiency of the PAC (CADR/W): ",round(energy_eff, digits = 1), "<br/>","<br/>",
+                 "Total operating power consumption: ",round(as.numeric(input$W)*as.numeric(input$N), digits = 1)," W", "<br/>","<br/>",
+                 "Power density: ",round(as.numeric(input$W)*as.numeric(input$N)/as.numeric(input$area), digits = 1)," W/m<sup>2</sup>")  
         } else {
           "Please check for missing values in any input parameters!"
         }
@@ -354,9 +354,9 @@ server<- function(input, output, session) {
         ) 
         if (!is.na(Output)) {
           paste0("Effectiveness: ", as.character( round(Output*100, digits = 1) ), "%","<br/>","<br/>","<br/>",
-                 "Energy efficiency of the PAC (CADR/Watt): ",round(energy_eff, digits = 1), "<br/>","<br/>",
-                 "Total operating power consumption: ",round(as.numeric(input$W)*as.numeric(input$N), digits = 1)," Watts", "<br/>","<br/>",
-                 "Power density: ",round(as.numeric(input$W)*as.numeric(input$N)/as.numeric(input$area), digits = 1)," Watt/ft<sup>2</sup>")  
+                 "Energy efficiency of the PAC (CADR/W): ",round(energy_eff, digits = 1), "<br/>","<br/>",
+                 "Total operating power consumption: ",round(as.numeric(input$W)*as.numeric(input$N), digits = 1)," W", "<br/>","<br/>",
+                 "Power density: ",round(as.numeric(input$W)*as.numeric(input$N)/as.numeric(input$area), digits = 1)," W/ft<sup>2</sup>")  
         } else {
           "Please check for missing values in any input parameters!"
         }
@@ -375,17 +375,17 @@ server<- function(input, output, session) {
                   "portable air cleaner is needed to achieve",
                   round(input$eff, digits = 0), "%","<br/>","<br/>","<br/>",
                   
-                  "Energy efficiency of the PAC (CADR/Watt): ",round(energy_eff, digits = 1), "<br/>","<br/>",
-                  "Total operating power consumption: ",round(as.numeric(input$W)*ceiling(Output), digits = 1)," Watts", "<br/>","<br/>",
-                  "Power density: ",round(as.numeric(input$W)*ceiling(Output)/as.numeric(input$area), digits = 1)," Watt/m<sup>2</sup>")   
+                  "Energy efficiency of the PAC (CADR/W): ",round(energy_eff, digits = 1), "<br/>","<br/>",
+                  "Total operating power consumption: ",round(as.numeric(input$W)*ceiling(Output), digits = 1)," W", "<br/>","<br/>",
+                  "Power density: ",round(as.numeric(input$W)*ceiling(Output)/as.numeric(input$area), digits = 1)," W/m<sup>2</sup>")   
           }else {
             paste(as.character( ceiling(Output) ),
                   "portable air cleaners is needed to achieve",
                   round(input$eff, digits = 0), "%" ,"<br/>","<br/>","<br/>",
                   
-                  "Energy efficiency of the PAC (CADR/Watt): ",round(energy_eff, digits = 1), "<br/>","<br/>",
-                  "Total operating power consumption: ",round(as.numeric(input$W)*ceiling(Output), digits = 1)," Watts", "<br/>","<br/>",
-                  "Power density: ",round(as.numeric(input$W)*ceiling(Output)/as.numeric(input$area), digits = 1)," Watt/m<sup>2</sup>")   
+                  "Energy efficiency of the PAC (CADR/W): ",round(energy_eff, digits = 1), "<br/>","<br/>",
+                  "Total operating power consumption: ",round(as.numeric(input$W)*ceiling(Output), digits = 1)," W", "<br/>","<br/>",
+                  "Power density: ",round(as.numeric(input$W)*ceiling(Output)/as.numeric(input$area), digits = 1)," W/m<sup>2</sup>")   
           } 
         } else {
           "Please check for missing values in any input parameters!"
@@ -404,17 +404,17 @@ server<- function(input, output, session) {
                   "portable air cleaner is needed to achieve",
                   round(input$eff, digits = 0), "%","<br/>","<br/>","<br/>",
                   
-                  "Energy efficiency of the PAC (CADR/Watt): ",round(energy_eff, digits = 1), "<br/>","<br/>",
-                  "Total operating power consumption: ",round(as.numeric(input$W)*ceiling(Output), digits = 1)," Watts", "<br/>","<br/>",
-                  "Power density: ",round(as.numeric(input$W)*ceiling(Output)/as.numeric(input$area), digits = 1)," Watt/ft<sup>2</sup>")   
+                  "Energy efficiency of the PAC (CADR/W): ",round(energy_eff, digits = 1), "<br/>","<br/>",
+                  "Total operating power consumption: ",round(as.numeric(input$W)*ceiling(Output), digits = 1)," W", "<br/>","<br/>",
+                  "Power density: ",round(as.numeric(input$W)*ceiling(Output)/as.numeric(input$area), digits = 1)," W/ft<sup>2</sup>")   
           }else {
             paste(as.character( ceiling(Output) ),
                   "portable air cleaners is needed to achieve",
                   round(input$eff, digits = 0), "%" ,"<br/>","<br/>","<br/>",
                   
-                  "Energy efficiency of the PAC (CADR/Watt): ",round(energy_eff, digits = 1), "<br/>","<br/>",
-                  "Total operating power consumption: ",round(as.numeric(input$W)*ceiling(Output), digits = 1)," Watts", "<br/>","<br/>",
-                  "Power density: ",round(as.numeric(input$W)*ceiling(Output)/as.numeric(input$area), digits = 1)," Watt/ft<sup>2</sup>")   
+                  "Energy efficiency of the PAC (CADR/W): ",round(energy_eff, digits = 1), "<br/>","<br/>",
+                  "Total operating power consumption: ",round(as.numeric(input$W)*ceiling(Output), digits = 1)," W", "<br/>","<br/>",
+                  "Power density: ",round(as.numeric(input$W)*ceiling(Output)/as.numeric(input$area), digits = 1)," W/ft<sup>2</sup>")   
           } 
         } else {
           "Please check for missing values in any input parameters!"

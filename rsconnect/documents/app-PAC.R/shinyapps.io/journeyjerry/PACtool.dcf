@@ -5,9 +5,10 @@ account: journeyjerry
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 4455095
-bundleId: 4887575
-url: https://journeyjerry.shinyapps.io/PACtool/
-when: 1628087827.18291
-lastSyncTime: 1628087827.18291
+bundleId: 4943800
+url: https://jiayuliaq.shinyapps.io/PACtool/
+when: 1629436145.6436
+lastSyncTime: 1629436145.6436
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: app-PAC_test.R|app-PAC_test2.R|test.R
