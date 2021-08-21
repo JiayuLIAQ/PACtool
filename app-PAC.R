@@ -14,50 +14,53 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
                            
                            tabPanel("Home",
                                     
-                                    fluidRow(column(5,  
-                                                    h4("Select units"),
-                                                    
-                                                    radioButtons("units_type", NULL,
-                                                                 choices = c('System International (SI)' = 'SI',
-                                                                             'Inch-Pound (IP)' = 'IP'),
-                                                                 selected = 'SI'
-                                                    ),
-                                                    h4("Select task"),
-                                                    
-                                                    radioButtons("input_type", NULL,
-                                                                 choices = c('Estimate the effectiveness' = 'Efficacy',
-                                                                             'Determine PAC numbers' = 'Needed PAC numbers'),
-                                                                 selected = 'Efficacy'
-                                                    ),
-                                                    
-                                                    h4("Input parameters"),
-                                                    
-                                                    selectInput("k", label = "Particle type", 
-                                                                choices = list("Ultrafine particle" = 1.64, 
-                                                                               "PM2.5" = 1.67, 
-                                                                               "PM10" = 3.35), 
-                                                                selected = 1.67),
-                                                    
-                                                    uiOutput("ui1"),
-                                                    uiOutput("CADR_lim"),
-                                                    
-                                                    uiOutput("height_lim"),  
-                                                    uiOutput("area_lim"),  
-                                                    
-                                                    radioButtons("venti_selection", label = p("Ventilation rate (", 
-                                                                                              a("air changes per hour", href="https://en.wikipedia.org/wiki/Air_changes_per_hour", target = "_blank"),
-                                                                                              ", ACH)"), 
-                                                                 choices = c('Select default ventilation rate' = 'venti_type',
-                                                                             'Manually type in' = 'venti_type_in'),
-                                                                 selected = 'venti_type'),
-                                                    uiOutput("ui3"),
-                                                    uiOutput("V_Watt")#,
-                                                    # actionButton("submitbutton", "Calculate", 
-                                                    #              class = "btn btn-primary")
-                                    ),
-                                    column(7, plotOutput('plot1'), h4(htmlOutput("txtout") )
+                                    sidebarLayout(
+                                      
+                                      sidebarPanel(
+                                        h4("Select units"),
+                                        
+                                        radioButtons("units_type", NULL,
+                                                     choices = c('System International (SI)' = 'SI',
+                                                                 'Inch-Pound (IP)' = 'IP'),
+                                                     selected = 'SI'
+                                        ),
+                                        h4("Select task"),
+                                        
+                                        radioButtons("input_type", NULL,
+                                                     choices = c('Estimate the effectiveness' = 'Efficacy',
+                                                                 'Determine PAC numbers' = 'Needed PAC numbers'),
+                                                     selected = 'Efficacy'
+                                        ),
+                                        
+                                        h4("Input parameters"),
+                                        
+                                        # selectInput("k", label = "Particle type", 
+                                        #             choices = list("Ultrafine particle" = 1.64, 
+                                        #                            "PM2.5" = 1.67, 
+                                        #                            "PM10" = 3.35), 
+                                        #             selected = 1.67),
+                                        
+                                        uiOutput("ui1"),
+                                        uiOutput("CADR_lim"),
+                                        
+                                        uiOutput("height_lim"),  
+                                        uiOutput("area_lim"),  
+                                        
+                                        radioButtons("venti_selection", label = p("Ventilation rate (", 
+                                                                                  a("air changes per hour", href="https://en.wikipedia.org/wiki/Air_changes_per_hour", target = "_blank"),
+                                                                                  ", ACH)"), 
+                                                     choices = c('Select default ventilation rate' = 'venti_type',
+                                                                 'Manually type in' = 'venti_type_in'),
+                                                     selected = 'venti_type'),
+                                        uiOutput("ui3"),
+                                        uiOutput("V_Watt")#,
+                                        # actionButton("submitbutton", "Calculate", 
+                                        #              class = "btn btn-primary")
+                                      ),
+                                      mainPanel( plotOutput('plot1'), 
+                                                 h4(htmlOutput("txtout") )
+                                      )
                                     )
-                                    ),
                            ), #tabPanel(), Home
                            
                            tabPanel("About", 
@@ -172,14 +175,14 @@ server<- function(input, output, session) {
     
     switch(input$units_type,
            "SI" =  numericInput("CADR", 
-                                label = p(a("Clean air delivery rate", href="https://en.wikipedia.org/wiki/Clean_air_delivery_rate", target = "_blank"),
-                                          HTML("of one portable air cleaner (m<sup>3</sup>/h)") ), 
+                                label = p(a("Clean air delivery rate, CADR,", href="https://en.wikipedia.org/wiki/Clean_air_delivery_rate", target = "_blank"),
+                                          HTML("for PM2.5 of one PAC (m<sup>3</sup>/h)") ), 
                                 value =  numVal_cadr_si(),
                                 min = global_cadr_si$numMin,
                                 max = global_cadr_si$numMax),
            "IP" =  numericInput("CADR", 
-                                label = p(a("Clean air delivery rate", href="https://en.wikipedia.org/wiki/Clean_air_delivery_rate", target = "_blank"),
-                                          HTML("of one portable air cleaner (ft<sup>3</sup>/minute)") ), 
+                                label = p(a("Clean air delivery rate, CADR,", href="https://en.wikipedia.org/wiki/Clean_air_delivery_rate", target = "_blank"),
+                                          HTML("for PM2.5 of one PAC (ft<sup>3</sup>/minute)") ), 
                                 value =  numVal_cadr_ip(),
                                 min = global_cadr_ip$numMin,
                                 max = global_cadr_ip$numMax )
@@ -328,11 +331,12 @@ server<- function(input, output, session) {
   datasetInput <- reactive({
     
     energy_eff <- as.numeric(input$CADR)/as.numeric(input$W)
+    k <- 1.67
     
     if(input$input_type == "Efficacy") {
       if (input$units_type == "SI") {
         Output <- fun_effectiveness( as.numeric(input$a),
-                                     as.numeric(input$k),
+                                     k,
                                      as.numeric(input$CADR),
                                      as.numeric(input$height) * as.numeric(input$area),
                                      as.numeric(input$N)
@@ -347,7 +351,7 @@ server<- function(input, output, session) {
         }
       } else {
         Output <- fun_effectiveness( as.numeric(input$a),
-                                     as.numeric(input$k),
+                                     k,
                                      as.numeric(input$CADR)*1.69901,
                                      as.numeric(input$height) * as.numeric(input$area)*0.0283168,
                                      as.numeric(input$N)
@@ -365,7 +369,7 @@ server<- function(input, output, session) {
     } else {
       if (input$units_type == "SI") {
         Output <- fun_num_PAC(as.numeric(input$a),
-                              as.numeric(input$k),
+                              k,
                               as.numeric(input$CADR),
                               as.numeric(input$height) * as.numeric(input$area),
                               as.numeric(input$eff))
@@ -373,7 +377,7 @@ server<- function(input, output, session) {
           if (ceiling(Output) < 2) {
             paste(as.character( ceiling(Output) ),
                   "portable air cleaner is needed to achieve",
-                  round(input$eff, digits = 0), "%","<br/>","<br/>","<br/>",
+                  round(input$eff, digits = 0), "% effectiveness","<br/>","<br/>","<br/>",
                   
                   "Energy efficiency of the PAC (CADR/W): ",round(energy_eff, digits = 1), "<br/>","<br/>",
                   "Total operating power consumption: ",round(as.numeric(input$W)*ceiling(Output), digits = 1)," W", "<br/>","<br/>",
@@ -381,7 +385,7 @@ server<- function(input, output, session) {
           }else {
             paste(as.character( ceiling(Output) ),
                   "portable air cleaners is needed to achieve",
-                  round(input$eff, digits = 0), "%" ,"<br/>","<br/>","<br/>",
+                  round(input$eff, digits = 0), "% effectiveness" ,"<br/>","<br/>","<br/>",
                   
                   "Energy efficiency of the PAC (CADR/W): ",round(energy_eff, digits = 1), "<br/>","<br/>",
                   "Total operating power consumption: ",round(as.numeric(input$W)*ceiling(Output), digits = 1)," W", "<br/>","<br/>",
@@ -393,7 +397,7 @@ server<- function(input, output, session) {
         
       } else {
         Output <- fun_num_PAC(as.numeric(input$a),
-                              as.numeric(input$k),
+                              k,
                               as.numeric(input$CADR)*1.69901,
                               as.numeric(input$height) * as.numeric(input$area)*0.0283168,
                               as.numeric(input$eff))
@@ -402,7 +406,7 @@ server<- function(input, output, session) {
           if (ceiling(Output) < 2) {
             paste(as.character( ceiling(Output) ),
                   "portable air cleaner is needed to achieve",
-                  round(input$eff, digits = 0), "%","<br/>","<br/>","<br/>",
+                  round(input$eff, digits = 0), "% effectiveness","<br/>","<br/>","<br/>",
                   
                   "Energy efficiency of the PAC (CADR/W): ",round(energy_eff, digits = 1), "<br/>","<br/>",
                   "Total operating power consumption: ",round(as.numeric(input$W)*ceiling(Output), digits = 1)," W", "<br/>","<br/>",
@@ -410,7 +414,7 @@ server<- function(input, output, session) {
           }else {
             paste(as.character( ceiling(Output) ),
                   "portable air cleaners is needed to achieve",
-                  round(input$eff, digits = 0), "%" ,"<br/>","<br/>","<br/>",
+                  round(input$eff, digits = 0), "% effectiveness" ,"<br/>","<br/>","<br/>",
                   
                   "Energy efficiency of the PAC (CADR/W): ",round(energy_eff, digits = 1), "<br/>","<br/>",
                   "Total operating power consumption: ",round(as.numeric(input$W)*ceiling(Output), digits = 1)," W", "<br/>","<br/>",
@@ -425,12 +429,15 @@ server<- function(input, output, session) {
   
   
   # plot-------------------------
+  k <- 1.67
+  
   pp_si <- reactive({
     deposition_df <- data.table(
-      k = c(1.64,1.67,3.35),
-      parti_type = c("Ultrafine particle","PM2.5","PM10")
+      k = c(1.67),
+      parti_type = c("PM2.5")
     )
-    df <- data.table(expand.grid(N = c(1:50),  k = c(1.64, 1.67, 3.35)))[deposition_df, on = "k"]
+    
+    df <- data.table(expand.grid(N = c(1:50),  k = c(1.67)))[deposition_df, on = "k"]
     
     df[, eff := fun_effectiveness(as.numeric(input$a), 
                                   k,
@@ -442,7 +449,7 @@ server<- function(input, output, session) {
       df1 <- data.table(N = as.numeric(input$N),
                         
                         eff = fun_effectiveness(as.numeric(input$a), 
-                                                as.numeric(input$k),
+                                                k,
                                                 as.numeric(input$CADR),
                                                 as.numeric(input$height) * as.numeric(input$area),
                                                 as.numeric(input$N))* 100)
@@ -450,7 +457,7 @@ server<- function(input, output, session) {
       df2 <- data.table(expand.grid(N = c(as.numeric(input$N),0),
                                     
                                     eff = fun_effectiveness(as.numeric(input$a), 
-                                                            as.numeric(input$k),
+                                                            k,
                                                             as.numeric(input$CADR),
                                                             as.numeric(input$height) * as.numeric(input$area),
                                                             as.numeric(input$N))* 100) )
@@ -460,13 +467,13 @@ server<- function(input, output, session) {
       
     }else{
       df1 <- data.table(N = fun_num_PAC(as.numeric(input$a),
-                                        as.numeric(input$k),
+                                        k,
                                         as.numeric(input$CADR),
                                         as.numeric(input$height) * as.numeric(input$area),
                                         as.numeric(input$eff)),  
                         eff = as.numeric(input$eff) )
       df2 <- data.table(expand.grid(N = fun_num_PAC(as.numeric(input$a),
-                                                    as.numeric(input$k),
+                                                    k,
                                                     as.numeric(input$CADR),
                                                     as.numeric(input$height) * as.numeric(input$area),
                                                     as.numeric(input$eff)),  
@@ -484,9 +491,10 @@ server<- function(input, output, session) {
       g_line +
       g_point + 
       
-      scale_color_manual("Particle type", values = c("#1E9DE5", "#DCC575", "#C6C6C6") ) +
+      scale_color_manual("Particle type", values = c("#DCC575") ) +
       scale_y_continuous("Effectiveness (%)", expand = c(0,0)) +
       scale_x_continuous("Number of portable air cleaners", expand = c(0,0)) +
+      guides(colour=FALSE) +
       # theme_bw() +
       theme(legend.position = "top",
             legend.direction = "horizontal",
@@ -503,10 +511,10 @@ server<- function(input, output, session) {
   pp_ip <- reactive({
     
     deposition_df <- data.table(
-      k = c(1.64,1.67,3.35),
-      parti_type = c("Ultrafine particle","PM2.5","PM10")
+      k = c(1.67),
+      parti_type = c("PM2.5")
     )
-    df <- data.table(expand.grid(N = c(1:50),  k = c(1.64, 1.67, 3.35)))[deposition_df, on = "k"]
+    df <- data.table(expand.grid(N = c(1:50),  k = c(1.67)))[deposition_df, on = "k"]
     
     df[, eff := fun_effectiveness(as.numeric(input$a), 
                                   k,
@@ -518,7 +526,7 @@ server<- function(input, output, session) {
       df1 <- data.table(N = as.numeric(input$N),
                         
                         eff = fun_effectiveness(as.numeric(input$a), 
-                                                as.numeric(input$k),
+                                                k,
                                                 as.numeric(input$CADR)*1.69901,
                                                 as.numeric(input$height) * as.numeric(input$area)*0.0283168,
                                                 as.numeric(input$N))* 100)
@@ -526,7 +534,7 @@ server<- function(input, output, session) {
       df2 <- data.table(expand.grid(N = c(as.numeric(input$N),0),
                                     
                                     eff = fun_effectiveness(as.numeric(input$a), 
-                                                            as.numeric(input$k),
+                                                            k,
                                                             as.numeric(input$CADR)*1.69901,
                                                             as.numeric(input$height) * as.numeric(input$area)*0.0283168,
                                                             as.numeric(input$N))* 100) )
@@ -536,13 +544,13 @@ server<- function(input, output, session) {
       
     }else{
       df1 <- data.table(N = fun_num_PAC(as.numeric(input$a),
-                                        as.numeric(input$k),
+                                        k,
                                         as.numeric(input$CADR)*1.69901,
                                         as.numeric(input$height) * as.numeric(input$area)*0.0283168,
                                         as.numeric(input$eff)),  
                         eff = as.numeric(input$eff) )
       df2 <- data.table(expand.grid(N = fun_num_PAC(as.numeric(input$a),
-                                                    as.numeric(input$k),
+                                                    k,
                                                     as.numeric(input$CADR)*1.69901,
                                                     as.numeric(input$height) * as.numeric(input$area)*0.0283168,
                                                     as.numeric(input$eff)),  
@@ -560,9 +568,10 @@ server<- function(input, output, session) {
       g_line +
       g_point + 
       
-      scale_color_manual("Particle type", values = c("#1E9DE5", "#DCC575", "#C6C6C6") ) +
+      scale_color_manual("Particle type", values = c( "#DCC575") ) +
       scale_y_continuous("Effectiveness (%)", expand = c(0,0)) +
       scale_x_continuous("Number of portable air cleaners", expand = c(0,0)) +
+      guides(colour=FALSE) +
       # theme_bw() +
       theme(legend.position = "top",
             legend.direction = "horizontal",
