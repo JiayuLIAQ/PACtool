@@ -20,7 +20,7 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
                                         h4("Select units"),
                                         
                                         radioButtons("units_type", NULL,
-                                                     choices = c('System International (SI)' = 'SI',
+                                                     choices = c('International System of Units (SI)' = 'SI',
                                                                  'Inch-Pound (IP)' = 'IP'),
                                                      selected = 'SI'
                                         ),
@@ -46,9 +46,11 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
                                         uiOutput("height_lim"),  
                                         uiOutput("area_lim"),  
                                         
-                                        radioButtons("venti_selection", label = p("Ventilation rate (", 
-                                                                                  a("air changes per hour", href="https://en.wikipedia.org/wiki/Air_changes_per_hour", target = "_blank"),
-                                                                                  ", ACH)"), 
+                                        radioButtons("venti_selection", label = p(HTML(paste0("Ventilation rate (", 
+                                                                                  a("air changes per hour", 
+                                                                                    href="https://en.wikipedia.org/wiki/Air_changes_per_hour", 
+                                                                                    target = "_blank"),
+                                                                                  ", ACH)" ) )), 
                                                      choices = c('Select default ventilation rate' = 'venti_type',
                                                                  'Manually type in' = 'venti_type_in'),
                                                      selected = 'venti_type'),
@@ -98,6 +100,39 @@ server<- function(input, output, session) {
   })
   
   
+  global_eff <- reactiveValues(numVal = 50, numMin = 0, numMax = 100) 
+  numVal_eff <- reactive({
+    if(!is.null(input$N)){
+      if(!is.na(input$N)){
+        if(input$N < global_eff$numMin) return(global_eff$numMin)
+        if(input$N > global_eff$numMax) return(global_eff$numMax)     
+        return(input$N)
+      }else{
+        return(NA)
+      }
+    }else{
+      return(global_eff$numVal)
+    }
+  })
+  
+  
+  
+  # output$ui1 <- renderUI({
+  #   if (is.null(input$input_type))
+  #     return()
+  #   switch(input$input_type,
+  #          "Efficacy" =  numericInput("N", 
+  #                                     label = "Number of PACs deployed", 
+  #                                     value = numVal_pac_number(),
+  #                                     min = global_pac_number$numMin,
+  #                                     max = global_pac_number$numMax),
+  #          "Needed PAC numbers" = numericInput("eff", 
+  #                                              label = "Effectiveness target (%)", 
+  #                                              value = 50)
+  #   )
+  # })
+  
+  
   output$ui1 <- renderUI({
     if (is.null(input$input_type))
       return()
@@ -109,7 +144,9 @@ server<- function(input, output, session) {
                                       max = global_pac_number$numMax),
            "Needed PAC numbers" = numericInput("eff", 
                                                label = "Effectiveness target (%)", 
-                                               value = 50)
+                                               value = numVal_eff(),
+                                               min = global_eff$numMin,
+                                               max = global_eff$numMax)
     )
   })
   
@@ -384,7 +421,7 @@ server<- function(input, output, session) {
                   "Power density: ",round(as.numeric(input$W)*ceiling(Output)/as.numeric(input$area), digits = 1)," W/m<sup>2</sup>")   
           }else {
             paste(as.character( ceiling(Output) ),
-                  "portable air cleaners is needed to achieve",
+                  "portable air cleaners are needed to achieve",
                   round(input$eff, digits = 0), "% effectiveness" ,"<br/>","<br/>","<br/>",
                   
                   "Energy efficiency of the PAC (CADR/W): ",round(energy_eff, digits = 1), "<br/>","<br/>",

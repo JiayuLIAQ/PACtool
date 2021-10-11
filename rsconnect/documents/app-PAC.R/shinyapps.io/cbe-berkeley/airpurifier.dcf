@@ -1,0 +1,14 @@
+name: airpurifier
+title: airpurifier
+username:
+account: cbe-berkeley
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4835248
+bundleId: 5121757
+url: https://cbe-berkeley.shinyapps.io/airpurifier/
+when: 1633790803.95417
+lastSyncTime: 1633790803.95417
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: app-PAC_test.R|app-PAC_test2.R|test.R
