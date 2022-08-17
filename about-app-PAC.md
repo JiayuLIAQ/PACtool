@@ -13,5 +13,5 @@ Zuraimi, M.S., Li, J., Pantelic, J., & Schiavon, S. Indoor Air Pollution of Outd
 This interactive visualisation tool was funded by the Republic of Singapore's National Research Foundation through a grant to the Berkeley Education Alliance for Research in Singapore (BEARS) for the Singapore-Berkeley Building Efficiency and Sustainability in the Tropics (SinBerBEST) Program. BEARS has been established by the University of California, Berkeley as a center for intellectual excellence in research and education in Singapore.
 
 #### Contact
-[Zuraimi Sultan](https://www.linkedin.com/in/zuraimi-sultan-20b51014/) (zuraimi.sultan@bears-berkeley.sg), [Jiayu Li](https://www.linkedin.com/in/jiayu-li-74a70b142/) (jiayu.li@bears-berkeley.sg), [Jovan Pantelic](https://www.linkedin.com/in/jovan-pantelic-351a6898/) (pantelic.jovan01@gmail.com), and [Stefano Schiavon](https://www.linkedin.com/in/stefanoschiavon/) (schiavon@berkeley.edu)
+[Zuraimi Sultan](https://www.linkedin.com/in/zuraimi-sultan-20b51014/) (Zuraimi_SULTAN@nea.gov.sg), [Jiayu Li](https://www.linkedin.com/in/jiayu-li-74a70b142/) (jiayu.li@berkeley.edu), [Jovan Pantelic](https://www.linkedin.com/in/jovan-pantelic-351a6898/) (pantelic.jovan01@gmail.com), and [Stefano Schiavon](https://www.linkedin.com/in/stefanoschiavon/) (schiavon@berkeley.edu)
 
