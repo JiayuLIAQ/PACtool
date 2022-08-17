@@ -7,7 +7,7 @@ To estimate the effectiveness of the PACs in a given room, you need to first typ
 This tool can be used to determine how many PACs are needed in your space. Similarly, instead of the PAC numbers as the known input parameter, you need to give a target effectiveness. For office buildings that require supplementary air cleaning, the minimum PAC effectiveness should be 50%. For enclosed air‐conditioned office buildings without mechanical ventilation provision, the minimum PAC effectiveness should be 80%.
 
 #### Reference
-S. Zuraimi, J. Li, J. Pantelic, S. Schiavon (2021), Methods to assess and design portable air cleaners in office buildings. Indoor Air. Under review.
+Zuraimi, M.S., Li, J., Pantelic, J., & Schiavon, S. Indoor Air Pollution of Outdoor Origin: Mitigation Using Portable Air Cleaners in Singapore Office Building. Aerosol and Air Quality Research, 22, 220204. DOI: [10.4209/aaqr.220204](https://doi.org/10.4209/aaqr.220204)
 
 #### Acknowledgements
 This interactive visualisation tool was funded by the Republic of Singapore's National Research Foundation through a grant to the Berkeley Education Alliance for Research in Singapore (BEARS) for the Singapore-Berkeley Building Efficiency and Sustainability in the Tropics (SinBerBEST) Program. BEARS has been established by the University of California, Berkeley as a center for intellectual excellence in research and education in Singapore.
